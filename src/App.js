@@ -1,8 +1,21 @@
 import logo from './logo.svg';
 import './App.css';
-import {Button, Segment, Form, Container, Grid, Image, Popup} from 'semantic-ui-react'
+import {Menu, Dropdown, Button, } from 'semantic-ui-react'
+import {BrowserRouter as Router, Route, Link, Car} from 'react-router-dom'
 import React, { Component } from 'react'
-import axios from 'axios';
+
+import './App.css';
+import Home from './Home'
+import All_Pokemon from './All_Pokemon'
+import Bai_Toan from './Bai_Toan'
+import Admin from './Admin'
+
+const importAll = (r) => {
+  let images = {};
+  r.keys().forEach((item) => { images[item.replace('./', '')] = r(item).default; });
+  return images;
+}
+const anhPokemon = importAll(require.context('./anh', false, /\.(png|jpe?g|svg)$/));
 
 class App extends Component {
 
@@ -14,228 +27,78 @@ class App extends Component {
     soArrayCuaTen:'',
     timRaTen:'',
     timTatCaRaTen:[],
-
-    tenAdd:'',
-
   }
 
-  onChangeThemTenMoi = (e, { value }) => {
-    this.setState({tenAdd: value})
-  }
-  themTenMoi = (e, { value }) => {
-    axios.get('http://localhost:5400/Pokedex/themTen?tenMoi='+this.state.tenAdd)    
-    .then(res => {
-      this.setState({timTatCaRaTen: res.data.ketQuaTatCaTenArray});
-    })
+  chonMenu = (e, { name }) => {
+    this.setState({ dangChonGi: name});
   }
 
-
-  onChangeTimTenArray = (e, { value }) => {
-    this.setState({tenArray: value})
-  }
-  timTenArray = () => {
-    axios.get('http://localhost:5400/Pokedex/timTen?soArrayCuaTen='+(this.state.tenArray-1))
-    .then(res => {
-      // alert(res.data.ketQuaTenArray)
-      this.setState({timRaTen: res.data.ketQuaTenArray});
-      this.setState({tenArray:''});
-    })
-  }
-  timTatCaTenArray = () => {
-    axios.get('http://localhost:5400/Pokedex/timTatCaTen?soArrayCuaTen='+this.state.tenArray)
-    .then(res => {
-      this.setState({timTatCaRaTen: res.data.ketQuaTatCaTenArray});
-    })
-  }
-
-
-  onChangeTimSo1 = (e, { value }) => {
-    this.setState({so1: value})
-  }
-  onChangeTimSo2 = (e, { value }) => {
-    this.setState({so2: value})
-  }
-  tinhTong = () => {
-    axios.get('http://localhost:5400/Pokedex/cong?so1='+this.state.so1+'&so2='+this.state.so2)
-    .then(res => {
-      // alert(res.data.ketQua)
-      this.setState({ketQuaPhepTinh: res.data.ketQua});
-      this.setState({so1:''});
-      this.setState({so2:''});
-    })
-    .catch(err => {
-      // alert(err)
-      console.log(err)
-    })
-  }
-  tinhHieu = () => {
-    axios.get('http://localhost:5400/Pokedex/tru?so1='+this.state.so1+'&so2='+this.state.so2)
-    .then(res => {
-      // alert(res.data.ketQua)
-      this.setState({ketQuaPhepTinh: res.data.ketQua});
-      this.setState({so1:''});
-      this.setState({so2:''});
-    })
-    .catch(err => {
-      // alert(err)
-      console.log(err)
-    })
-  }
-  tinhtich = () => {
-    axios.get('http://localhost:5400/Pokedex/nhan?so1='+this.state.so1+'&so2='+this.state.so2)
-    .then(res => {
-      // alert(res.data.ketQua)
-      this.setState({ketQuaPhepTinh: res.data.ketQua});
-      this.setState({so1:''});
-      this.setState({so2:''});
-    })
-    .catch(err => {
-      // alert(err)
-      console.log(err)
-    })
-  }
-  tinhThuong = () => {
-    axios.get('http://localhost:5400/Pokedex/chia?so1='+this.state.so1+'&so2='+this.state.so2)
-    .then(res => {
-      // alert(res.data.ketQua)
-      this.setState({ketQuaPhepTinh: res.data.ketQua});
-      this.setState({so1:''});
-      this.setState({so2:''});
-    })
-    .catch(err => {
-      // alert(err)
-      console.log(err)
-    })
-  }
-  
   render() {
-    const { ketQuaPhepTinh, timRaTen, timTatCaRaTen } = this.state
-  
-
+    const { dangChonGi } = this.state
     return (
-      <div className="App">
+      <Router >
+        
+        <Menu>
+          <Menu.Item
+            as={Link}
+            to="/"
+            name='Home'
+            active={this.state.dangChonGi === 'Home'}
+            onClick={this.chonMenu}>
+          </Menu.Item>
 
-        <br/><br/><br/><br/><br/>
-              
-        so 1 
-        <Form>
-          <Form.Input inline
-          value={this.state.so1}
-          onChange={this.onChangeTimSo1}
-          />
-        </Form>
-        so 2 
-        <Form>
-          <Form.Input inline
-          value={this.state.so2}
-          onChange={this.onChangeTimSo2}
-          />
-        </Form>
-        <br/>
-        <Button onClick={this.tinhTong}>+</Button>
-        <Button onClick={this.tinhHieu}>-</Button>
-        <Button onClick={this.tinhtich}>*</Button>
-        <Button onClick={this.tinhThuong}>/</Button>
-        <br/><br/>
-        {ketQuaPhepTinh}
+          <Menu.Item
+            as={Link}
+            to="/All_Pokemon"
+            name='All_Pokemon'
+            active={this.state.dangChonGi === 'All_Pokemon'}
+            onClick={this.chonMenu}>
+          </Menu.Item>
+          
+          <Dropdown item text='Admin'>
+            <Dropdown.Menu>
 
-        <br/><br/><br/>
+              <Dropdown.Item
+                as={Link}
+                to="/Admin"
+                name='Add'
+                active={this.state.dangChonGi === 'Admin'}
+                onClick={this.chonMenu}>
+                Add
+              </Dropdown.Item>
 
-        {/* Tên trong Array [Pichu, Pikachu, Raichu] */}
-        <br/><br/>
-        <Form>
-          <Form.Input inline
-          value={this.state.tenArray}
-          onChange={this.onChangeTimTenArray}
-          />
-        </Form>
+              <Dropdown.Item
+                as={Link}
+                to="/Admin"
+                name='Edit'
+                active={this.state.dangChonGi === 'Admin'}
+                onClick={this.chonMenu}>
+                Edit
+              </Dropdown.Item>
 
-        <br/>
+            </Dropdown.Menu>
+          </Dropdown>
 
-        <Button onClick={this.timTenArray}>Tìm</Button>
-        <br/><br/>
-        <Button onClick={this.timTatCaTenArray}>Tìm tất cả</Button>
-        <br/><br/>
-        {timRaTen}
-        <Container align='center'>
-        <Segment compact raised>
+          <Menu.Item
+            as={Link}
+            to="/Bai_Toan"
+            name='Bai_Toan'
+            active={this.state.dangChonGi === 'Bai_Toan'}
+            onClick={this.chonMenu}>
+          </Menu.Item>
+          
+        </Menu>
 
-          {timTatCaRaTen}
-        {/* {timTatCaRaTen.map((moiTen, index)=>
-            <div>
-              {index+1}.{moiTen}
-            </div>
-          )} */}
+        <Route exact path = "/"  component = {Home} />
+        <Route path = "/All_Pokemon" render={() => <All_Pokemon anhPokemon={anhPokemon} />} />
+        <Route path = "/Admin" render={() => <Admin lamGi={dangChonGi} anhPokemon={anhPokemon} />} />
+        <Route path = "/Bai_Toan" render={() => <Bai_Toan />} />
 
+      </Router>
 
-
-    {/* {timTatCaRaTen
-      ?
-        <div>
-          {timTatCaRaTen.map((moiTen)=>
-            <div>
-                <Grid.Column>
-                  <Popup
-                    content={
-                      <div>
-                        <Image src={moiTen.image} size='big'></Image>
-                        Name: {moiTen.name}
-                      </div>
-                    }
-                    on='click'
-                    pinned
-                    trigger={<Image src={moiTen.image} size='small'></Image>}
-                    position='center'
-                  />
-                  <br/>
-                  {moiTen.name}
-                </Grid.Column>
-            </div>
-          )}
-        </div>
-      :null
-    } */}
-
-
-        </Segment>
-        </Container>
-
-        <br/><br/><br/>
-
-        <Form>
-          <Form.Input inline
-          value={this.state.tenArrayAdd}
-          onChange={this.onChangeThemTenMoi}
-          />
-        </Form>
-        <br/>
-        <Button onClick={this.themTenMoi}>Add</Button>
-
-
-
-        <br/><br/><br/><br/>
-
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
     );
+
   }
-
-
-
-
 }
 
 export default App;
