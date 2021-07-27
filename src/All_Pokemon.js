@@ -33,10 +33,12 @@ class All_Pokemon extends Component {
     kichThuoc: 'tiny',
     thuTu: 'number',
     coLoi:'',
+    ketQuaTimPokemonType2:[],
+    dangChonSucManhGi2:'All',
   }
   
   componentDidMount(){
-    axios.get('http://localhost:5400/Pokedex/timTatCaTen?thuTu=number')
+    axios.get('http://localhost:5400/pokemon?thuTu=number&type=all')
     .then(res => {
       if(res.data==='Không kết nối với MongoDB'){
         this.setState({coLoi: res.data});
@@ -75,7 +77,7 @@ class All_Pokemon extends Component {
     // });
     // this.setState({thuTu:'name'});
 
-    axios.get('http://localhost:5400/Pokedex/timTatCaTen?thuTu=name')
+    axios.get('http://localhost:5400/pokemon?thuTu=name')
     .then(res => {
       this.setState({danhSachPokemon: res.data});
       this.setState({thuTu:'name'});
@@ -87,7 +89,7 @@ class All_Pokemon extends Component {
     // });
     // this.setState({thuTu:'number'});
 
-    axios.get('http://localhost:5400/Pokedex/timTatCaTen?thuTu=number')
+    axios.get('http://localhost:5400/pokemon?thuTu=number')
     .then(res => {
       this.setState({danhSachPokemon: res.data});
       this.setState({thuTu:'number'});
@@ -98,8 +100,7 @@ class All_Pokemon extends Component {
     //   return a.hp - b.hp
     // });
     // this.setState({thuTu:'hp'});
-
-    axios.get('http://localhost:5400/Pokedex/timTatCaTen?thuTu=hp')
+    axios.get('http://localhost:5400/pokemon?thuTu=hp')
     .then(res => {
       this.setState({danhSachPokemon: res.data});
       this.setState({thuTu:'hp'});
@@ -111,7 +112,7 @@ class All_Pokemon extends Component {
     // });
     // this.setState({thuTu:'heightM'});
 
-    axios.get('http://localhost:5400/Pokedex/timTatCaTen?thuTu=heightM')
+    axios.get('http://localhost:5400/pokemon?thuTu=heightM')
     .then(res => {
       this.setState({danhSachPokemon: res.data});
       this.setState({thuTu:'heightM'});
@@ -123,7 +124,7 @@ class All_Pokemon extends Component {
     // });
     // this.setState({thuTu:'weightKG'});
 
-    axios.get('http://localhost:5400/Pokedex/timTatCaTen?thuTu=weightKG')
+    axios.get('http://localhost:5400/pokemon?thuTu=weightKG')
     .then(res => {
       this.setState({danhSachPokemon: res.data});
       this.setState({thuTu:'weightKG'});
@@ -134,36 +135,63 @@ class All_Pokemon extends Component {
   xoa=(id, index)=>{
     var r = window.confirm("Có xóa không?");
     if(r === true){
-      axios.get('http://localhost:5400/Pokedex/xoa?idMuonXoa='+id+'&thuTu='+this.state.thuTu)
-      // .then(res => {
-      //   this.setState({danhSachPokemon: res.data});
-      // })
+      axios.delete('http://localhost:5400/pokemon/'+id)
+      .then(res => {
+        // this.setState({danhSachPokemon: res.data});
+        alert(res.data);
+      })
       this.state.danhSachPokemon.splice(index, 1)
       this.forceUpdate()
       // alert('pokemon so '+ index)
     }
   }
 
+  chonType = (e, { name }) => {
+    this.setState({ dangChonSucManhGi2: name});
+  }
+
   render() {
-    const { GridOrTable, danhSachPokemon, kichThuoc, coLoi, thuTu, } = this.state
+    const { GridOrTable, danhSachPokemon, kichThuoc, coLoi, thuTu, ketQuaTimPokemonType2, dangChonSucManhGi2} = this.state
+    const { ketQuaTimPokemonType, sucManh} = this.props
+    
     return (
       <div className="All_Pokemon">
+        <h1>{dangChonSucManhGi2}</h1>
+        <h1>{sucManh}</h1>
+        <br/><br/>
+
+
         
-        <Segment compact>
-          Grid <Radio toggle onChange={this.onChangeBang} /> Table
-        </Segment>
-        
-        <Segment compact>
-        Tiny <Checkbox slider onChange={this.onChangeKichThuoc} /> Large
-        </Segment>
-        
+        <br/><br/>
+
+        <Segment compact>Grid <Radio toggle onChange={this.onChangeBang} /> Table</Segment>
+        <Segment compact>Tiny <Checkbox slider onChange={this.onChangeKichThuoc} /> Large</Segment>
         <Button color={thuTu==='name' ?'blue' :''} onClick={this.tenPoekon}>Name</Button>
         <Button color={thuTu==='number' ?'blue' :''} onClick={this.soPoekon}>Number</Button>
         <Button color={thuTu==='hp' ?'blue' :''} onClick={this.mauPokemon}>Hp</Button>
         <Button color={thuTu==='heightM' ?'blue' :''} onClick={this.caoPokemon}>HeightM</Button>
         <Button color={thuTu==='weightKG' ?'blue' :''} onClick={this.canNangPokemon}>WeightKg</Button>
-        
+        <br/>
+        <Button name={this.state.dangChonSucManhGi2 = 'Normal'} onClick={this.chonType}>Normal</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Fire'} onClick={this.chonType}>Fire</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Water'} onClick={this.chonType}>Water</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Electric'} onClick={this.chonType}>Electric</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Grass'} onClick={this.chonType}>Grass</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Ice'} onClick={this.chonType}>Ice</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Fighting'} onClick={this.chonType}>Fighting</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Poison'} onClick={this.chonType}>Poison</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Ground'} onClick={this.chonType}>Ground</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Fling'} onClick={this.chonType}>Fling</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Psychic'} onClick={this.chonType}>Psychic</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Bug'} onClick={this.chonType}>Bug</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Rock'} onClick={this.chonType}>Rock</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Ghost'} onClick={this.chonType}>Ghost</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Dragon'}  onClick={this.chonType}>Dragon</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Dark'}  onClick={this.chonType}>Dark</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Steel'}  onClick={this.chonType}>Steel</Button>
+        <Button name={this.state.dangChonSucManhGi2 = 'Fairy'}  onClick={this.chonType}>Fairy</Button>
         <br/><br/>
+
         {coLoi
           ?
           <Message compact error>
@@ -171,143 +199,307 @@ class All_Pokemon extends Component {
           </Message>
           :null
         }
-        {GridOrTable=== 'Table'
+
+        {sucManh === 'All'
           ?
-          <Container align='center'>
-            <Segment compact raised>
-              {danhSachPokemon
-                ?
-                <Grid doubling columns='5'>
-                    {danhSachPokemon.map((moiPokemon, index)=>
-                      
-                      <Grid.Column>
-                        <Popup on='click' trigger={
-                          <div>
-                            <Image src={this.props.anhPokemon[moiPokemon.image]} size={kichThuoc} style={{background:'white'}}></Image>
+          <div>
+            {GridOrTable=== 'Table'
+              ?
+              <Container align='center'>
+                <Segment compact raised>
+                  {danhSachPokemon
+                    ?
+                    <Grid doubling columns='5'>
+                        {danhSachPokemon.map((moiPokemon, index)=>
+                          <Grid.Column>
+                            <Popup on='click' trigger={
+                              <div>
+                                <Image src={this.props.anhPokemon[moiPokemon.image]} size={kichThuoc} style={{background:'white'}}></Image>
+                                <br/>
+                                <i>{moiPokemon.number}</i>
+                                <br/>
+                                <b>{moiPokemon.name}</b>
+                              </div>
+                            } wide='very' >
+                              <Grid>
+                                <Grid.Column textAlign='center' width={8}>
+                                  <Image src={this.props.anhPokemon[moiPokemon.image]} size='big' style={{background:'white'}}></Image>
+                                </Grid.Column>
+                                <Grid.Column textAlign='center' width={8}>
+                                  <b>Number: {moiPokemon.number}</b>
+                                  <br/>
+                                  <b>Name: {moiPokemon.name}</b>
+                                  <br/>
+                                  <b>Type: 
+                                    {moiPokemon.type.map((moiType, index)=>
+                                      types[moiType]  
+                                      ? <Label 
+                                          style={{color:'white', background:types[moiType].mau}}  
+                                          ><Icon name={types[moiType].kiHieu} />{moiType}
+                                        </Label>
+                                      : <div>Lỗi không tìm thấy {moiType} trog từ điền types</div>
+                                    )}
+                                  </b>
+                                  <br/>
+                                  <b>HP: {moiPokemon.hp}</b>
+                                  <br/>
+                                  <b>Attack: {moiPokemon.attack}</b>
+                                  <br/>
+                                  <b>Defense: {moiPokemon.defense}</b>
+                                  <br/>
+                                  <b>Sp:atk: {moiPokemon.sp_atk}</b>
+                                  <br/>
+                                  <b>Sp:def: {moiPokemon.sp_def}</b>
+                                  <br/>
+                                  <b>Speed: {moiPokemon.speed}</b>
+                                  <br/>
+                                  <b>Height: {moiPokemon.heightM}m</b>
+                                  <br/>
+                                  <b>Weight: {moiPokemon.weightKG}kg</b>
+                                  <br/>
+                                  {moiPokemon.evo_from === ''
+                                    ?null
+                                    :<b>Evo From: {moiPokemon.evo_from}</b>
+                                  }
+                                  <br/>
+                                  {moiPokemon.evo_to.length > 0
+                                    ?<b>Evo To: {moiPokemon.evo_to+'\n'}</b>
+                                    :null
+                                  }
+                                  <br/>
+                                  <Button onClick={() => this.xoa(moiPokemon._id, index)}>X</Button>
+                                </Grid.Column>
+                              </Grid>
+                            </Popup>
                             <br/>
-                            <i>{moiPokemon.number}</i>
-                            <br/>
-                            <b>{moiPokemon.name}</b>
-                          </div>
+                            {moiPokemon.type.map((moiType, index)=>
+                              types[moiType]
+                                ?<Icon circular style={{color:'white', background:types[moiType].mau}} name={types[moiType].kiHieu} size='large' />
+                                :<div>Lỗi không tìm thấy {moiType} trog từ điền types</div>
+                            )}
+                          </Grid.Column>
                           
-                        } wide='very' >
-                          <Grid>
-                            <Grid.Column textAlign='center' width={8}>
-                              <Image src={this.props.anhPokemon[moiPokemon.image]} size='big' style={{background:'white'}}></Image>
-                            </Grid.Column>
-                            <Grid.Column textAlign='center' width={8}>
-                              <b>Number: {moiPokemon.number}</b>
-                              <br/>
-                              <b>Name: {moiPokemon.name}</b>
-                              <br/>
-                              <b>Type: 
-                                {moiPokemon.type.map((moiType, index)=>
-                                  types[moiType]  
-                                  ? <Label 
-                                      style={{color:'white', background:types[moiType].mau}}  
-                                      ><Icon name={types[moiType].kiHieu} />{moiType}
-                                    </Label>
-                                  : <div>Lỗi không tìm thấy {moiType} trog từ điền types</div>
-                                )}
-                              </b>
-                              <br/>
-                              <b>HP: {moiPokemon.hp}</b>
-                              <br/>
-                              <b>Attack: {moiPokemon.attack}</b>
-                              <br/>
-                              <b>Defense: {moiPokemon.defense}</b>
-                              <br/>
-                              <b>Sp:atk: {moiPokemon.sp_atk}</b>
-                              <br/>
-                              <b>Sp:def: {moiPokemon.sp_def}</b>
-                              <br/>
-                              <b>Speed: {moiPokemon.speed}</b>
-                              <br/>
-                              <b>Height: {moiPokemon.heightM}m</b>
-                              <br/>
-                              <b>Weight: {moiPokemon.weightKG}kg</b>
-                              <br/>
-                              <b>Evo From: {moiPokemon.evo_from}</b>
-                              <br/>
-                              <b>Evo To: {moiPokemon.evo_to+'\n'}</b>
-                              <br/>
-                              <Button onClick={() => this.xoa(moiPokemon._id, index)}>X</Button>
-                            </Grid.Column>
-                          </Grid>
-                        </Popup>
-                        <br/>
-                        {moiPokemon.type.map((moiType, index)=>
-                          types[moiType]
-                            ?<Icon circular style={{color:'white', background:types[moiType].mau}} name={types[moiType].kiHieu} size='large' />
-                            :<div>Lỗi không tìm thấy {moiType} trog từ điền types</div>
                         )}
-                      </Grid.Column>
-                      
-                    )}
-                  </Grid>
-                :null
-              }
+                      </Grid>
+                    :null
+                  }
 
-            </Segment>
-          </Container>
+                </Segment>
+              </Container>
+              :
+              <Table celled>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Image</Table.HeaderCell>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Number</Table.HeaderCell>
+                    <Table.HeaderCell>Type</Table.HeaderCell>
+                    <Table.HeaderCell>Hp</Table.HeaderCell>
+                    <Table.HeaderCell>Attack</Table.HeaderCell>
+                    <Table.HeaderCell>Defense</Table.HeaderCell>
+                    <Table.HeaderCell>Sp.Atk</Table.HeaderCell>
+                    <Table.HeaderCell>Sp.Def</Table.HeaderCell>
+                    <Table.HeaderCell>Speed</Table.HeaderCell>
+                    <Table.HeaderCell>Height</Table.HeaderCell>
+                    <Table.HeaderCell>Weight</Table.HeaderCell>
+                    <Table.HeaderCell>Evo From</Table.HeaderCell>
+                    <Table.HeaderCell>Evo To</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
+
+                <Table.Body>
+                  {danhSachPokemon.map((moiPokemon, index)=>
+                    <Table.Row>
+                      <Table.Cell><Image src={this.props.anhPokemon[moiPokemon.image]} size='mini' size='tiny' style={{background:'white'}}></Image></Table.Cell>
+                      <Table.Cell>{moiPokemon.name}</Table.Cell>
+                      <Table.Cell>{moiPokemon.number}</Table.Cell>
+                      <Table.Cell>
+                        {moiPokemon.type.map((moiType, index)=>
+                          // <Label 
+                          //   style={{color:'white', background:types[moiType].mau}}
+                          //   ><Icon name={types[moiType].kiHieu} />{moiType}
+                          // </Label>
+                          types[moiType]
+                            ? <Label 
+                                style={{color:'white', background:types[moiType].mau}}
+                                ><Icon name={types[moiType].kiHieu} />{moiType}
+                              </Label>
+                            : <div>Lỗi không tìm thấy {moiType} trog từ điền types</div>
+                        )}
+                      </Table.Cell>
+                      <Table.Cell>{moiPokemon.hp}</Table.Cell>
+                      <Table.Cell>{moiPokemon.attack}</Table.Cell>
+                      <Table.Cell>{moiPokemon.defense}</Table.Cell>
+                      <Table.Cell>{moiPokemon.sp_atk}</Table.Cell>
+                      <Table.Cell>{moiPokemon.sp_def}</Table.Cell>
+                      <Table.Cell>{moiPokemon.speed}</Table.Cell>
+                      <Table.Cell>{moiPokemon.heightM}m</Table.Cell>
+                      <Table.Cell>{moiPokemon.weightKG}kg</Table.Cell>
+                      <Table.Cell>{moiPokemon.evo_from}</Table.Cell>
+                      <Table.Cell>{moiPokemon.evo_to+'\n'}</Table.Cell>
+                    </Table.Row>
+                  )}
+                </Table.Body>
+              </Table>
+            }
+          </div>
           :
-          <Table celled>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Image</Table.HeaderCell>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Number</Table.HeaderCell>
-                <Table.HeaderCell>Type</Table.HeaderCell>
-                <Table.HeaderCell>Hp</Table.HeaderCell>
-                <Table.HeaderCell>Attack</Table.HeaderCell>
-                <Table.HeaderCell>Defense</Table.HeaderCell>
-                <Table.HeaderCell>Sp.Atk</Table.HeaderCell>
-                <Table.HeaderCell>Sp.Def</Table.HeaderCell>
-                <Table.HeaderCell>Speed</Table.HeaderCell>
-                <Table.HeaderCell>Height</Table.HeaderCell>
-                <Table.HeaderCell>Weight</Table.HeaderCell>
-                <Table.HeaderCell>Evo From</Table.HeaderCell>
-                <Table.HeaderCell>Evo To</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
+          <div>
+            {GridOrTable=== 'Table'
+              ?
+              <Container align='center'>
+                <Segment compact raised>
+                  {ketQuaTimPokemonType
+                    ?
+                    <Grid doubling columns='5'>
+                        {ketQuaTimPokemonType.map((moiPokemon, index)=>
+                          <Grid.Column>
+                            <Popup on='click' trigger={
+                              <div>
+                                <Image src={this.props.anhPokemon[moiPokemon.image]} size={kichThuoc} style={{background:'white'}}></Image>
+                                <br/>
+                                <i>{moiPokemon.number}</i>
+                                <br/>
+                                <b>{moiPokemon.name}</b>
+                              </div>
+                            } wide='very' >
+                              <Grid>
+                                <Grid.Column textAlign='center' width={8}>
+                                  <Image src={this.props.anhPokemon[moiPokemon.image]} size='big' style={{background:'white'}}></Image>
+                                </Grid.Column>
+                                <Grid.Column textAlign='center' width={8}>
+                                  <b>Number: {moiPokemon.number}</b>
+                                  <br/>
+                                  <b>Name: {moiPokemon.name}</b>
+                                  <br/>
+                                  <b>Type: 
+                                    {moiPokemon.type.map((moiType, index)=>
+                                      types[moiType]  
+                                      ? <Label 
+                                          style={{color:'white', background:types[moiType].mau}}  
+                                          ><Icon name={types[moiType].kiHieu} />{moiType}
+                                        </Label>
+                                      : <div>Lỗi không tìm thấy {moiType} trog từ điền types</div>
+                                    )}
+                                  </b>
+                                  <br/>
+                                  <b>HP: {moiPokemon.hp}</b>
+                                  <br/>
+                                  <b>Attack: {moiPokemon.attack}</b>
+                                  <br/>
+                                  <b>Defense: {moiPokemon.defense}</b>
+                                  <br/>
+                                  <b>Sp:atk: {moiPokemon.sp_atk}</b>
+                                  <br/>
+                                  <b>Sp:def: {moiPokemon.sp_def}</b>
+                                  <br/>
+                                  <b>Speed: {moiPokemon.speed}</b>
+                                  <br/>
+                                  <b>Height: {moiPokemon.heightM}m</b>
+                                  <br/>
+                                  <b>Weight: {moiPokemon.weightKG}kg</b>
+                                  <br/>
+                                  {moiPokemon.evo_from === ''
+                                    ?null
+                                    :<b>Evo From: {moiPokemon.evo_from}</b>
+                                  }
+                                  <br/>
+                                  {moiPokemon.evo_to.length > 0
+                                    ?<b>Evo To: {moiPokemon.evo_to+'\n'}</b>
+                                    :null
+                                  }
+                                  <br/>
+                                  <Button onClick={() => this.xoa(moiPokemon._id, index)}>X</Button>
+                                </Grid.Column>
+                              </Grid>
+                            </Popup>
+                            <br/>
+                            {moiPokemon.type.map((moiType, index)=>
+                              types[moiType]
+                                ?<Icon circular style={{color:'white', background:types[moiType].mau}} name={types[moiType].kiHieu} size='large' />
+                                :<div>Lỗi không tìm thấy {moiType} trog từ điền types</div>
+                            )}
+                          </Grid.Column>
+                          
+                        )}
+                      </Grid>
+                    :null
+                  }
 
-            <Table.Body>
-              {danhSachPokemon.map((moiPokemon, index)=>
-                <Table.Row>
-                  <Table.Cell><Image src={this.props.anhPokemon[moiPokemon.image]} size='mini' size='tiny' style={{background:'white'}}></Image></Table.Cell>
-                  <Table.Cell>{moiPokemon.name}</Table.Cell>
-                  <Table.Cell>{moiPokemon.number}</Table.Cell>
-                  <Table.Cell>
-                    {moiPokemon.type.map((moiType, index)=>
-                      // <Label 
-                      //   style={{color:'white', background:types[moiType].mau}}
-                      //   ><Icon name={types[moiType].kiHieu} />{moiType}
-                      // </Label>
-                      types[moiType]
-                        ? <Label 
-                            style={{color:'white', background:types[moiType].mau}}
-                            ><Icon name={types[moiType].kiHieu} />{moiType}
-                          </Label>
-                        : <div>Lỗi không tìm thấy {moiType} trog từ điền types</div>
-                      
-                    )}
-                  </Table.Cell>
-                  <Table.Cell>{moiPokemon.hp}</Table.Cell>
-                  <Table.Cell>{moiPokemon.attack}</Table.Cell>
-                  <Table.Cell>{moiPokemon.defense}</Table.Cell>
-                  <Table.Cell>{moiPokemon.sp_atk}</Table.Cell>
-                  <Table.Cell>{moiPokemon.sp_def}</Table.Cell>
-                  <Table.Cell>{moiPokemon.speed}</Table.Cell>
-                  <Table.Cell>{moiPokemon.heightM}m</Table.Cell>
-                  <Table.Cell>{moiPokemon.weightKG}kg</Table.Cell>
-                  <Table.Cell>{moiPokemon.evo_from}</Table.Cell>
-                  <Table.Cell>{moiPokemon.evo_to+'\n'}</Table.Cell>
-                </Table.Row>
-              )}
-            </Table.Body>
-          </Table>
+                </Segment>
+              </Container>
+              :
+              <Table celled>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Image</Table.HeaderCell>
+                    <Table.HeaderCell>Name</Table.HeaderCell>
+                    <Table.HeaderCell>Number</Table.HeaderCell>
+                    <Table.HeaderCell>Type</Table.HeaderCell>
+                    <Table.HeaderCell>Hp</Table.HeaderCell>
+                    <Table.HeaderCell>Attack</Table.HeaderCell>
+                    <Table.HeaderCell>Defense</Table.HeaderCell>
+                    <Table.HeaderCell>Sp.Atk</Table.HeaderCell>
+                    <Table.HeaderCell>Sp.Def</Table.HeaderCell>
+                    <Table.HeaderCell>Speed</Table.HeaderCell>
+                    <Table.HeaderCell>Height</Table.HeaderCell>
+                    <Table.HeaderCell>Weight</Table.HeaderCell>
+                    <Table.HeaderCell>Evo From</Table.HeaderCell>
+                    <Table.HeaderCell>Evo To</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
 
+                <Table.Body>
+                  {ketQuaTimPokemonType.map((moiPokemon, index)=>
+                    <Table.Row>
+                      <Table.Cell><Image src={this.props.anhPokemon[moiPokemon.image]} size='mini' size='tiny' style={{background:'white'}}></Image></Table.Cell>
+                      <Table.Cell>{moiPokemon.name}</Table.Cell>
+                      <Table.Cell>{moiPokemon.number}</Table.Cell>
+                      <Table.Cell>
+                        {moiPokemon.type.map((moiType, index)=>
+                          // <Label 
+                          //   style={{color:'white', background:types[moiType].mau}}
+                          //   ><Icon name={types[moiType].kiHieu} />{moiType}
+                          // </Label>
+                          types[moiType]
+                            ? <Label 
+                                style={{color:'white', background:types[moiType].mau}}
+                                ><Icon name={types[moiType].kiHieu} />{moiType}
+                              </Label>
+                            : <div>Lỗi không tìm thấy {moiType} trog từ điền types</div>
+                        )}
+                      </Table.Cell>
+                      <Table.Cell>{moiPokemon.hp}</Table.Cell>
+                      <Table.Cell>{moiPokemon.attack}</Table.Cell>
+                      <Table.Cell>{moiPokemon.defense}</Table.Cell>
+                      <Table.Cell>{moiPokemon.sp_atk}</Table.Cell>
+                      <Table.Cell>{moiPokemon.sp_def}</Table.Cell>
+                      <Table.Cell>{moiPokemon.speed}</Table.Cell>
+                      <Table.Cell>{moiPokemon.heightM}m</Table.Cell>
+                      <Table.Cell>{moiPokemon.weightKG}kg</Table.Cell>
+                      <Table.Cell>{moiPokemon.evo_from}</Table.Cell>
+                      <Table.Cell>{moiPokemon.evo_to+'\n'}</Table.Cell>
+                    </Table.Row>
+                  )}
+                </Table.Body>
+              </Table>
+            }
+          </div>
         }
+
+        
+
+
+
+
+
+
+
+
+
+
+
+        
         <br/>
       </div>
 

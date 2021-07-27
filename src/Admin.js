@@ -6,6 +6,10 @@ import axios from 'axios';
 var danhSachPokemon = [
   // {key:'', text:'', value:'', image:''}
 ]
+var danhSachPokemon2 = [
+  // {key:'', text:'', value:'', image:''}
+]
+
 
 const Types = [
   { key: 'Normal', text: 'Normal', value: 'Normal' },
@@ -47,6 +51,7 @@ class Admin extends Component {
     Weight:'',
     Evo_from:'',
     Evo_to:'',
+    Id:'',
     thongTinMoi:'',
     coLoi:false,
   }
@@ -100,7 +105,7 @@ class Admin extends Component {
 
 
   componentDidMount(){
-    axios.get('http://localhost:5400/Pokedex/timTatCaTen?thuTu=number')
+    axios.get('http://localhost:5400/pokemon?thuTu=number')
     .then(res => {
       if(res.data==='Không kết nối với MongoDB'){
         this.setState({coLoi: res.data});
@@ -116,10 +121,18 @@ class Admin extends Component {
           tatCaPokemon = res.data
 
           danhSachPokemon.push({
-                                  key: res.data[i].name, 
-                                  text: res.data[i].name, 
-                                  value: i, 
-                                  image: { avatar: true, src: this.props.anhPokemon[res.data[i].image] },
+                                key: res.data[i].name, 
+                                text: res.data[i].name, 
+                                value: i, 
+                                image: { avatar: true, src: this.props.anhPokemon[res.data[i].image] },
+                              })
+
+
+          danhSachPokemon2.push({
+                                key: res.data[i].name, 
+                                text: res.data[i].name, 
+                                value: res.data[i].name, 
+                                image: { avatar: true, src: this.props.anhPokemon[res.data[i].image] },
                               })
         }
         this.forceUpdate()
@@ -128,13 +141,11 @@ class Admin extends Component {
   }
 
   chonPokemon = (e, { value }) => {
-
-
-    
+    this.setState({Id: tatCaPokemon[value]._id})
     this.setState({Name: tatCaPokemon[value].name})
     this.setState({Number: tatCaPokemon[value].number})
     this.setState({Image: tatCaPokemon[value].image})
-    // this.setState({Type: tatCaPokemon[value].type})
+    this.setState({Type: tatCaPokemon[value].type})
     this.setState({Hp: tatCaPokemon[value].hp})
     this.setState({Attack: tatCaPokemon[value].attack})
     this.setState({Defense: tatCaPokemon[value].defense})
@@ -145,7 +156,6 @@ class Admin extends Component {
     this.setState({Weight: tatCaPokemon[value].weightKG})
     this.setState({Evo_from: tatCaPokemon[value].evo_from})
     this.setState({Evo_to: tatCaPokemon[value].evo_to})
-    // this.setState({Number: value})
   }
   
   themDanhSach = (e, { value }) => {
@@ -169,8 +179,9 @@ class Admin extends Component {
                         weightKG: this.state.Weight,
                         evo_from: this.state.Evo_from,
                         evo_to: this.state.Evo_to,
+                        // id: this.state.Id,
                       }
-      axios.post('http://localhost:5400/Pokedex/themPokemon', pokemonMoi)
+      axios.post('http://localhost:5400/pokemon', pokemonMoi)
       .then(res => {
         // alert(res.data)
         this.setState({thongTinMoi: res.data})
@@ -178,13 +189,13 @@ class Admin extends Component {
     }
   }
 
-  suaDanhSach = (e, { value }) => {
-    if(isNaN(this.state.Number) || (this.state.Image) || isNaN(this.state.Hp) || isNaN(this.state.Attack) || isNaN(this.state.Defense) || 
-      isNaN(this.state.Sp_atk) || isNaN(this.state.Sp_def) || isNaN(this.state.Speed) || isNaN(this.state.HeightM) || isNaN(this.state.Weight)){
-      this.setState({coLoi:true})
-    }else{
+  suaDanhSach = (id, index) => {
+    // if(isNaN(this.state.Number) || (this.state.Image) || isNaN(this.state.Hp) || isNaN(this.state.Attack) || isNaN(this.state.Defense) || 
+    //   isNaN(this.state.Sp_atk) || isNaN(this.state.Sp_def) || isNaN(this.state.Speed) || isNaN(this.state.HeightM) || isNaN(this.state.Weight)){
+    //   this.setState({coLoi:true})
+    // }else{
       this.setState({coLoi:false})
-      var pokemonMoi = {
+      var pokemonSua = {
                         name: this.state.Name,
                         number: this.state.Number,
                         image: this.state.Image,
@@ -200,7 +211,12 @@ class Admin extends Component {
                         evo_from: this.state.Evo_from,
                         evo_to: this.state.Evo_to,
                       }
-    }
+      axios.put('http://localhost:5400/pokemon/'+this.state.Id, pokemonSua)
+      // .then(res => {
+      //   alert(res.data)
+        // this.setState({thongTinMoi: res.data})
+      // })
+    // }
   }
 
   
@@ -262,12 +278,13 @@ class Admin extends Component {
           <br/>
           Type
           <Dropdown 
-            placeholder='Skills' 
-            fluid 
+            placeholder='Types' 
+            // fluid 
             multiple 
             search 
             selection 
             options={Types} 
+            value={this.state.Type}
             onChange={this.onChangeType}
            />
 
@@ -377,13 +394,25 @@ class Admin extends Component {
 
           <br/>
           Evo_from
-          <Form.Input inline
+          <br/>
+          <Dropdown 
+          placeholder='Evo_from' 
+          search 
+          selection 
+          options={danhSachPokemon2} 
           value={this.state.Evo_from}
           onChange={this.onChangeEvo_from}
           />
           <br/>
+
           Evo_to
-          <Form.Input inline fluid
+          <br/>
+          <Dropdown 
+          placeholder='Evo_to' 
+          multiple 
+          search 
+          selection 
+          options={danhSachPokemon2} 
           value={this.state.Evo_to}
           onChange={this.onChangeEvo_to}
           />
@@ -394,6 +423,7 @@ class Admin extends Component {
         {this.props.lamGi === 'Add'
           ?<Button onClick={this.themDanhSach}>Thêm thông tin Pokemon</Button>
           :<Button onClick={this.suaDanhSach}>Sửa thông tin Pokemon</Button>
+          // :<Button onClick={() => this.suaDanhSach(danhSachPokemon._id)}>Sửa thông tin Pokemon</Button>
         }
         
         

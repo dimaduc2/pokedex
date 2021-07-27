@@ -8,13 +8,13 @@ import axios from 'axios';
 
 
 
-class Bai_Toan extends Component {
+class PokeBall extends Component {
 
   state = {
   }
   
   componentDidMount() {
-    axios.get('http://localhost:5400/Pokedex/Bai_Toan')
+    axios.get('http://localhost:5400/Pokedex/PokeBall')
     
   }
   
@@ -24,7 +24,7 @@ class Bai_Toan extends Component {
 
     return (
       
-      <div className="Bai_Toan">
+      <div className="PokeBall">
 dfxdsđfsdf
       </div>
 
@@ -37,4 +37,4 @@ dfxdsđfsdf
 
 
 }
-export default Bai_Toan;
+export default PokeBall;
