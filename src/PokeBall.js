@@ -11,21 +11,38 @@ import axios from 'axios';
 class PokeBall extends Component {
 
   state = {
-  }
-  
-  componentDidMount() {
-    axios.get('http://localhost:5400/Pokedex/PokeBall')
+    danhSachPokeBall:'',
+    coLoi:'',
     
   }
   
   
+  componentDidMount(){
+    axios.get('http://localhost:5400/pokeball?nameBall=all')
+
+    .then(res => {
+      if(res.data==='Không kết nối với MongoDB'){
+        this.setState({coLoi: res.data});
+      }
+      else{
+        this.setState({danhSachPokeBall: res.data});
+      }
+    })
+  }
+
+  
+
   render() {
-    const { ketQuaPhepTinh } = this.state
+    const { ketQuaPhepTinh, danhSachPokeBall } = this.state
 
     return (
       
       <div className="PokeBall">
-dfxdsđfsdf
+        
+
+        {danhSachPokeBall.length}
+
+
       </div>
 
     )

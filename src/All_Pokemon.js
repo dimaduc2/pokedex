@@ -67,7 +67,7 @@ class All_Pokemon extends Component {
     }
   }
 
-  tenPoekon = () => {
+  tenPokemon = () => {
     // this.state.danhSachPokemon.sort(function(a, b){
     //   let chu1 = a.name.toLowerCase();
     //   let chu2 = b.name.toLowerCase();
@@ -166,7 +166,7 @@ class All_Pokemon extends Component {
 
         <Segment compact>Grid <Radio toggle onChange={this.onChangeBang} /> Table</Segment>
         <Segment compact>Tiny <Checkbox slider onChange={this.onChangeKichThuoc} /> Large</Segment>
-        <Button color={thuTu==='name' ?'blue' :''} onClick={this.tenPoekon}>Name</Button>
+        <Button color={thuTu==='name' ?'blue' :''} onClick={this.tenPokemon}>Name</Button>
         <Button color={thuTu==='number' ?'blue' :''} onClick={this.soPoekon}>Number</Button>
         <Button color={thuTu==='hp' ?'blue' :''} onClick={this.mauPokemon}>Hp</Button>
         <Button color={thuTu==='heightM' ?'blue' :''} onClick={this.caoPokemon}>HeightM</Button>
