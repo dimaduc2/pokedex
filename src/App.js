@@ -55,7 +55,7 @@ const sucManhPokemon = [
 
 const importAll = (r) => {
   let images = {};
-  r.keys().forEach((item) => { images[item.replace('./', '')] = r(item).default; });
+  r.keys().forEach((item) => {images[item.replace('./', '')] = r(item).default; });
   return images;
 }
 const anhPokemon = importAll(require.context('./anh', false, /\.(png|jpe?g|svg)$/));
@@ -181,7 +181,7 @@ class App extends Component {
           <Route exact path = "/"  component = {Home} />
           <Route path = "/All_Pokemon" render={() => <All_Pokemon anhPokemon={anhPokemon} sucManh={dangChonSucManhGi} ketQuaTimPokemonType={ketQuaTimPokemonType} />} />
           <Route path = "/Admin" render={() => <Admin lamGi={dangChonGi} anhPokemon={anhPokemon} />} />
-          <Route path = "/PokeBall" render={() => <PokeBall />} />
+          <Route path = "/PokeBall" render={() => <PokeBall anhPokemon={anhPokemon} />} />
 
         </div>
       </Router>

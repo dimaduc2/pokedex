@@ -34,7 +34,7 @@ class All_Pokemon extends Component {
     thuTu: 'number',
     coLoi:'',
     ketQuaTimPokemonType2:[],
-    dangChonSucManhGi2:'All',
+    dangChonSucManhGi2:'',
   }
   
   componentDidMount(){
@@ -148,6 +148,8 @@ class All_Pokemon extends Component {
 
   chonType = (e, { name }) => {
     this.setState({ dangChonSucManhGi2: name});
+    axios.get('http://localhost:5400/pokemon?type='+name)
+
   }
 
   render() {
