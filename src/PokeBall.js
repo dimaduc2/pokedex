@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import {Button, Segment, Form, Container, Grid, Image, Popup, Menu} from 'semantic-ui-react'
+import {Button, Segment, Form, Container, Grid, Image, Popup, Menu, Card, Input} from 'semantic-ui-react'
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import React, { Component } from 'react'
 import axios from 'axios';
@@ -12,13 +12,16 @@ class PokeBall extends Component {
 
   state = {
     danhSachPokeBall:[],
-    coLoi:'',
+    coLoi:false,
     kichThuoc: 'tiny',
+    Name:'',
+    Image:'',
+    Id:'',
   }
   
   
   componentDidMount(){
-    axios.get('http://localhost:5400/pokeball?nameBall=all')
+    axios.get('http://localhost:5400/pokeball')
 
     .then(res => {
       if(res.data==='Không kết nối với MongoDB'){
@@ -29,26 +32,18 @@ class PokeBall extends Component {
       }
     })
   }
-
   
   xoaDanhSachPokeBall = (id, index) => {
     var r = window.confirm("Có xóa không?");
     if(r === true){
       axios.delete('http://localhost:5400/pokeball/'+id)
       .then(res => {
-        alert(res.data)
+        // this.setState({danhSachPokemon: res.data});
+        // alert(res.data)
       })
     }
   }
-  themDanhSachPokeBall = (e, { value }) => {
-    var pokeBallMoi = {
-                      name: this.state.Name,
-                    }
-    axios.post('http://localhost:5400/pokeball', pokeBallMoi)
-    .then(res => {
-      alert(res.data)
-    })
-  }
+
   suaDanhSachPokeBall = (id, index) => {
     var pokeBallSua = {
                       name: this.state.Name,
@@ -57,6 +52,36 @@ class PokeBall extends Component {
     .then(res => {
       alert(res.data)
     })
+  }
+
+
+  onChangeName = (e, { value }) => {
+    this.setState({Name: value})
+  }
+  onChangeImage = (e, { value }) => {
+    this.setState({Image: value})
+  }
+  themDanhSach = (e, { value }) => {
+    // if((this.state.Image)){
+    //   this.setState({coLoi:true})
+    // }else{
+
+
+      this.setState({coLoi:false})
+      var pokeBallMoi = {
+                        name: this.state.Name,
+                        image: this.state.Image,
+                        // id: this.state.Id,
+                      }
+      axios.post('http://localhost:5400/pokeball', pokeBallMoi)
+      .then(res => {
+        alert(res.data)
+        this.setState({Name: ''})
+        this.setState({Image: ''})
+      })
+
+
+    // }
   }
 
 
@@ -70,7 +95,7 @@ class PokeBall extends Component {
 
         {danhSachPokeBall.length}
 
-        {danhSachPokeBall
+        {/* {danhSachPokeBall
           ?
           <Grid doubling columns='5'>
               {danhSachPokeBall.map((moiPokeBall, index)=>
@@ -81,7 +106,7 @@ class PokeBall extends Component {
                       <br/>
                       <b>{moiPokeBall.name}</b>
                     </div>
-                  } wide='very' >
+                  } wide='very'>
                     <Grid>
                       <Grid.Column textAlign='center' width={8}>
                         <Image src={moiPokeBall.image} size='big' ></Image>
@@ -95,15 +120,70 @@ class PokeBall extends Component {
               )}
             </Grid>
           :null
+        } */}
+          
+
+        {danhSachPokeBall
+          ?
+
+          <Card.Group itemsPerRow={5}>
+            {danhSachPokeBall.map((moiPokeBall, index)=>
+              <Card>
+                <Popup on='click' trigger={
+                  <div>
+                    <Image src={moiPokeBall.image}></Image>
+                    <br/>
+                    <b>{moiPokeBall.name}</b>
+                  </div>
+                } wide='very'>
+                  <Card>
+                      <Image src={moiPokeBall.image} size='big' ></Image>
+                      <b>Name: {moiPokeBall.name}</b>
+                      <br/> 
+                      <Button onClick={() => this.xoaDanhSachPokeBall(moiPokeBall._id, index)}>X</Button>
+                  </Card>
+                </Popup>
+              </Card>
+            )}
+          </Card.Group>
+
+          :null
         }
           
 
         <br/>
-        <Button onClick={this.xoaDanhSachPokeBall}>xóa danh sach PokeBall</Button>
-        <Button onClick={this.themDanhSachPokeBall}>thêm danh sach PokeBall</Button>
         <Button onClick={this.suaDanhSachPokeBall}>sửa danh sach PokeBall</Button>
+        <br/><br/><br/><br/>
+
+
+        name
+        <Form.Field inline>
+          <Input 
+          value={this.state.Name}
+          onChange={this.onChangeName}
+          />
+
+          <br/>
+          Image
+          <Form.Field inline>
+            <Input 
+            value={this.state.Image}
+            onChange={this.onChangeImage}
+            />
+          </Form.Field>
+
+        </Form.Field>
+        
         <br/>
 
+        <Button onClick={this.themDanhSach}>Thêm thông tin Poke Ball</Button>
+        
+
+
+
+
+
+        <br/><br/>
 
       </div>
 
