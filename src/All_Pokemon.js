@@ -203,6 +203,14 @@ class All_Pokemon extends Component {
           </Message>
           :null
         }
+        
+        {sucManh === 'All'
+          ?<h1>Có {danhSachPokemon.length}</h1>
+          :<h1>Có {ketQuaTimPokemonType.length} Pokemon theo sức mạnh {sucManh}</h1>
+        }
+        
+        
+
 
         {sucManh === 'All'
           ?
